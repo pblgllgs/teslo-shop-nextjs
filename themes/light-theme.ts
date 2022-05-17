@@ -1,6 +1,4 @@
 import { createTheme } from '@mui/material/styles';
-import { red,  } from '@mui/material/colors';
-
 
 export const lightTheme = createTheme({
   palette: {
@@ -57,6 +55,8 @@ export const lightTheme = createTheme({
       },
       styleOverrides: {
         root: {
+          backgroundColor: 'white',
+          color: 'black',
           textTransform: 'none',
           boxShadow: 'none',
           borderRadius: 10,
