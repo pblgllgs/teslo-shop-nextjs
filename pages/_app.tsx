@@ -1,8 +1,7 @@
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
-import { ThemeProvider } from '@emotion/react';
 import { lightTheme } from '../themes';
-import { CssBaseline } from '@mui/material';
+import { CssBaseline, ThemeProvider } from '@mui/material';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

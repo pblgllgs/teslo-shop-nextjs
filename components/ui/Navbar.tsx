@@ -16,7 +16,11 @@ export const Navbar = () => {
     <AppBar>
       <Toolbar>
         <NextLink href="/" passHref>
-          <Link underline="none" display="flex" alignItems="center">
+          <Link
+            color="black"
+            display="flex"
+            alignItems="center"
+          >
             <Typography variant="h6"> Teslo |</Typography>
             <Typography sx={{ ml: 0.5 }}>Shop</Typography>
           </Link>
@@ -31,17 +35,17 @@ export const Navbar = () => {
           }}
         >
           <NextLink href="/category/men" passHref>
-            <Link underline="none">
+            <Link >
               <Button>Hombres</Button>
             </Link>
           </NextLink>
           <NextLink href="/category/women" passHref>
-            <Link underline="none">
+            <Link >
               <Button>Mujeres</Button>
             </Link>
           </NextLink>
           <NextLink href="/category/kid" passHref>
-            <Link underline="none">
+            <Link>
               <Button>Niños</Button>
             </Link>
           </NextLink>
