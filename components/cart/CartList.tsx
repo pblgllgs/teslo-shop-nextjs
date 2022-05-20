@@ -1,6 +1,14 @@
 import { FC } from 'react';
 import { initialData } from '../../database/products';
-import { Box, Button, CardActionArea, CardMedia, Grid, Link, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  CardActionArea,
+  CardMedia,
+  Grid,
+  Link,
+  Typography,
+} from '@mui/material';
 import NextLink from 'next/link';
 import { ItemCounter } from '../ui';
 
@@ -10,11 +18,11 @@ const productsInCart = [
   initialData.products[2],
 ];
 
-interface Props{
-
+interface Props {
+  editable?: boolean;
 }
 
-export const CartList: FC<Props> = () => {
+export const CartList: FC<Props> = ({ editable = false }) => {
   return (
     <>
       {productsInCart.map((product) => (
@@ -24,7 +32,7 @@ export const CartList: FC<Props> = () => {
               <Link>
                 <CardActionArea>
                   <CardMedia
-                    image={`products/${product.images[0]}`}
+                    image={`/products/${product.images[0]}`}
                     component="img"
                     sx={{ borderRadius: '5px' }}
                   />
@@ -35,14 +43,27 @@ export const CartList: FC<Props> = () => {
           <Grid item xs={7}>
             <Box display="flex" flexDirection="column">
               <Typography variant="body1">{product.title}</Typography>
-              <Typography variant="body1">Talla: <strong>M</strong></Typography>
-
-              <ItemCounter />
+              <Typography variant="body1">
+                Talla: <strong>M</strong>
+              </Typography>
+              {editable ? (
+                <ItemCounter initial={1} />
+              ) : (
+                <Typography variant="h5">3 items</Typography>
+              )}
             </Box>
           </Grid>
-          <Grid item xs={2} display='flex' alignItems='center' flexDirection='column'>
-            <Typography variant='subtitle1'>${product.price}</Typography>
-            <Button variant='text' color='secondary'>Remover</Button>
+          <Grid
+            item
+            xs={2}
+            display="flex"
+            alignItems="center"
+            flexDirection="column"
+          >
+            <Typography variant="subtitle1">${product.price}</Typography>
+            <Button variant="text" color="secondary" disabled={!editable}>
+              Remover
+            </Button>
           </Grid>
         </Grid>
       ))}

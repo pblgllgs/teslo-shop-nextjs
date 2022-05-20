@@ -31,13 +31,32 @@ const ProductPage: FC<Props> = () => {
               <Typography variant="subtitle2" component="h1">
                 Cantidad
               </Typography>
-              <ItemCounter/>
-              <SizeSelector selectedSize={product.sizes[0]} sizes={product.sizes}/>
+              <ItemCounter initial={1} />
+              <SizeSelector
+                selectedSize={product.sizes[0]}
+                sizes={product.sizes}
+              />
             </Box>
-            <Button className="circular-btn" color="secondary">
+            <Button
+              className="circular-btn"
+              color="secondary"
+              disabled={product.inStock === 0}
+            >
               Agregar
             </Button>
-            {/* <Chip label="No hay disponibles" color="error" variant="outlined" /> */}
+            {product.inStock === 0 ? (
+              <Chip
+                label="No hay disponibles"
+                color="error"
+                variant="outlined"
+              />
+            ) : (
+              <Chip
+                label="Hay disponibles"
+                color="success"
+                variant="outlined"
+              />
+            )}
             <Box sx={{ mt: 3 }}>
               <Typography variant="subtitle2" component="h1">
                 Descripción

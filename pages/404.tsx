@@ -1,5 +1,4 @@
 import { Box, Typography } from '@mui/material';
-import { CartList } from '../components/cart';
 import { ShopLayout } from '../components/layouts';
 
 const ErrorPage = () => {
@@ -22,7 +21,6 @@ const ErrorPage = () => {
         </Typography>
         <Typography marginLeft={2}>Página no encontrada</Typography>
       </Box>
-      < CartList />
     </ShopLayout>
   );
 };
