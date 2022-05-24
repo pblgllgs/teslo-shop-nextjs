@@ -12,6 +12,12 @@ docker-compose up -d
 mongodb://localhost:27017/teslodb
 ```
 
+# Mongo restableser DB:
+
+```
+http://localhost:3000/api/seed
+```
+
 ## instalar dependiencias
 
 ```
