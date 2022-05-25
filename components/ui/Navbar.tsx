@@ -10,17 +10,24 @@ import {
 } from '@mui/material';
 import { SearchOutlined, ShoppingCartOutlined } from '@mui/icons-material';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
+import { UiContext } from '../../context';
+import { useContext } from 'react';
 
 export const Navbar = () => {
+
+  const {toogleSideMenu} = useContext(UiContext);
+
+  const handleSideMenu = () => {
+    toogleSideMenu();
+  }
+
+  const { asPath } = useRouter();
   return (
     <AppBar>
       <Toolbar>
         <NextLink href="/" passHref>
-          <Link
-            color="black"
-            display="flex"
-            alignItems="center"
-          >
+          <Link color="black" display="flex" alignItems="center">
             <Typography variant="h6"> Teslo |</Typography>
             <Typography sx={{ ml: 0.5 }}>Shop</Typography>
           </Link>
@@ -35,18 +42,24 @@ export const Navbar = () => {
           }}
         >
           <NextLink href="/category/men" passHref>
-            <Link >
-              <Button>Hombres</Button>
+            <Link>
+              <Button color={asPath === '/category/men' ? 'primary' : 'info'}>
+                Hombres
+              </Button>
             </Link>
           </NextLink>
           <NextLink href="/category/women" passHref>
-            <Link >
-              <Button>Mujeres</Button>
+            <Link>
+              <Button color={asPath === '/category/women' ? 'primary' : 'info'}>
+                Mujeres
+              </Button>
             </Link>
           </NextLink>
           <NextLink href="/category/kid" passHref>
             <Link>
-              <Button>Niños</Button>
+              <Button color={asPath === '/category/kid' ? 'primary' : 'info'}>
+                Niños
+              </Button>
             </Link>
           </NextLink>
         </Box>
@@ -63,7 +76,7 @@ export const Navbar = () => {
             </IconButton>
           </Link>
         </NextLink>
-        <Button>Menu</Button>
+        <Button onClick={handleSideMenu}>Menu</Button>
       </Toolbar>
     </AppBar>
   );

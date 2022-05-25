@@ -4,8 +4,7 @@ import { IProduct } from '../../../interfaces';
 import Product from '../../../models/Product';
 type Data =
     | { message: string }
-    | { products: IProduct[] }
-    | { product: IProduct }
+    | IProduct[]
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     switch (req.method) {
@@ -30,7 +29,7 @@ const getproducts = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
             .select('slug title price images inStock -_id')
             .lean();
         await db.disconnect();
-        res.status(200).json({ products });
+        res.status(200).json( products );
     } catch (error) {
         await db.disconnect();
         console.log(error);
