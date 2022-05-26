@@ -34,7 +34,7 @@ export const ProductCard: FC<Props> = ({ product }) => {
       onMouseLeave={() => setIsHover(false)}
     >
       <Card>
-        <NextLink href={`/product/slug`} passHref prefetch={false}>
+        <NextLink href={`/product/${product.slug}`} passHref prefetch={false}>
           <Link>
             <CardActionArea>
               <CardMedia
@@ -42,13 +42,16 @@ export const ProductCard: FC<Props> = ({ product }) => {
                 component="img"
                 image={productImage}
                 alt={product.title}
-                onLoad={ () => setIsImageLoaded(true) }
+                onLoad={() => setIsImageLoaded(true)}
               />
             </CardActionArea>
           </Link>
         </NextLink>
       </Card>
-      <Box sx={{ m: 1 , display: isImageLoaded ? 'block': 'none'}} className="fadeIn">
+      <Box
+        sx={{ mt: 1, display: isImageLoaded ? 'block' : 'none' }}
+        className="fadeIn"
+      >
         <Typography fontWeight={700}>{product.title}</Typography>
         <Typography fontWeight={500}>${product.price}</Typography>
       </Box>
