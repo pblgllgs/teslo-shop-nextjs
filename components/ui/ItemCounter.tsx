@@ -3,26 +3,36 @@ import { Box, IconButton, Typography } from '@mui/material';
 import React, { FC, useState } from 'react';
 
 interface Props {
-  initial: number;
+  currentValue: number;
+  maxValue: number;
+  updateQuantity: (newValue: number) => void;
 }
 
-export const ItemCounter: FC<Props> = ({ initial }) => {
-  const [count, setCount] = useState(initial);
+export const ItemCounter: FC<Props> = ({ currentValue, maxValue, updateQuantity }) => {
 
-  const handlerAdd = () => {
-    setCount(count + 1);
-  };
-  const handlerRemove = () => {
-    setCount(count - 1);
+   const addOrRemove = (value:number) => {
+    if (value === -1) {
+      if(currentValue === 1) {
+        return;
+      }
+      return updateQuantity(currentValue - 1);
+    }
+    if(currentValue >= maxValue) {
+      return;
+    }
+
+    updateQuantity(currentValue + 1);
   };
 
   return (
     <Box display="flex" alignItems="center">
-      <IconButton onClick={handlerRemove} disabled={count === 0}>
+      <IconButton onClick={() => addOrRemove(-1)}>
         <RemoveCircleOutline />
       </IconButton>
-      <Typography sx={{ width: 40, textAlign: 'center' }}>{count}</Typography>
-      <IconButton onClick={handlerAdd}>
+      <Typography sx={{ width: 40, textAlign: 'center' }}>
+        {currentValue}
+      </Typography>
+      <IconButton onClick={() => addOrRemove(+1)}>
         <AddCircleOutline />
       </IconButton>
     </Box>

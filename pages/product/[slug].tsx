@@ -1,20 +1,58 @@
+import { useState, useContext } from 'react';
 import { Box, Button, Chip, Grid, Typography } from '@mui/material';
 import { ShopLayout } from '../../components/layouts';
 import { ProductSlideshow, SizeSelector } from '../../components/products';
 import { ItemCounter } from '../../components/ui';
-import { IProduct } from '../../interfaces';
+import { ICartProduct, IProduct, ISize } from '../../interfaces';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
-import { GetServerSideProps } from 'next';
 import {
   getProductsBySlug,
   getAllProductsSlugs,
 } from '../../database/dbProducts';
+import { CartContext } from '../../context';
+import { useRouter } from 'next/router';
 
 interface Props {
   product: IProduct;
 }
 
 const ProductPage: NextPage<Props> = ({ product }) => {
+  const router = useRouter();
+  const { addProductsToCart } = useContext(CartContext);
+
+  const [tempCartProduct, setTempCartProduct] = useState<ICartProduct>({
+    _id: product._id,
+    image: product.images[0],
+    price: product.price,
+    size: undefined,
+    slug: product.slug,
+    title: product.title,
+    gender: product.gender,
+    quantity: 1,
+  });
+
+  const selectedSize = (size: ISize) => {
+    setTempCartProduct((currentProduct) => ({
+      ...currentProduct,
+      size,
+    }));
+  };
+
+  const onUpdateQuantity = (quantity: number) => {
+    setTempCartProduct((currentProduct) => ({
+      ...currentProduct,
+      quantity,
+    }));
+  };
+
+  const addToCart = () => {
+    if (!tempCartProduct.size === undefined) {
+      return;
+    }
+    addProductsToCart(tempCartProduct);
+    router.push('/cart');
+  };
+
   return (
     <ShopLayout title={product.title} pageDescription={product.description}>
       <Grid container spacing={3}>
@@ -30,32 +68,50 @@ const ProductPage: NextPage<Props> = ({ product }) => {
               ${product.price}
             </Typography>
             <Box sx={{ my: 2 }}>
-              <Typography variant="subtitle2" component="h1">
-                Cantidad
+              <Typography variant="h6">
+                Stock: {product.inStock}
+                {product.inStock === 0 ? ' productos' : ''}
               </Typography>
-              <ItemCounter initial={1} />
+              {product.inStock === 0 ? (
+                <Typography>No hay productos...</Typography>
+              ) : (
+                <ItemCounter
+                  currentValue={tempCartProduct.quantity}
+                  updateQuantity={(count) => onUpdateQuantity(count)}
+                  maxValue={product.inStock}
+                />
+              )}
               <SizeSelector
-                selectedSize={product.sizes[0]}
+                selectedSize={tempCartProduct.size}
                 sizes={product.sizes}
+                onSelectedSize={(size) => selectedSize(size)}
+                disabled={product.inStock === 0}
               />
             </Box>
             <Button
               className="circular-btn"
               color="secondary"
-              disabled={product.inStock === 0}
+              disabled={
+                product.inStock === 0 || tempCartProduct.size === undefined
+              }
+              onClick={addToCart}
             >
-              Agregar
+              {tempCartProduct.size
+                ? 'Agregar al carrito'
+                : 'Seleccione un talla'}
             </Button>
-            {product.inStock === 0 ? (
+            {product.inStock > 0 ? (
               <Chip
-                label="No hay disponibles"
-                color="error"
+                label={`En stock ${
+                  product.inStock < 10 ? ', pocas unidades' : ''
+                } `}
+                color={`${product.inStock >= 10 ? 'success' : 'warning'}`}
                 variant="outlined"
               />
             ) : (
               <Chip
-                label="Hay disponibles"
-                color="success"
+                label="No hay disponibles"
+                color="error"
                 variant="outlined"
               />
             )}

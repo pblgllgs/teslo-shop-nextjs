@@ -1,5 +1,4 @@
-import { FC } from 'react';
-import { initialData } from '../../database/products';
+import { FC, useContext } from 'react';
 import {
   Box,
   Button,
@@ -11,28 +10,33 @@ import {
 } from '@mui/material';
 import NextLink from 'next/link';
 import { ItemCounter } from '../ui';
+import { CartContext } from '../../context';
+import { ICartProduct } from '../../interfaces';
 
-const productsInCart = [
-  initialData.products[0],
-  initialData.products[1],
-  initialData.products[2],
-];
+
 
 interface Props {
   editable?: boolean;
 }
 
 export const CartList: FC<Props> = ({ editable = false }) => {
+
+  const { cart,removeCartProduct } = useContext(CartContext);
+
+  const handleRemoveProduct = (product: ICartProduct) => {
+    removeCartProduct(product);
+  };
+
   return (
     <>
-      {productsInCart.map((product) => (
+      {cart.map((product) => (
         <Grid container key={product.slug} spacing={2} sx={{ mb: 1 }}>
           <Grid item xs={3}>
-            <NextLink href="/product/slug" passHref>
+            <NextLink href={`/product/${product.slug}`} passHref>
               <Link>
                 <CardActionArea>
                   <CardMedia
-                    image={`/products/${product.images[0]}`}
+                    image={`/products/${product.image}`}
                     component="img"
                     sx={{ borderRadius: '5px' }}
                   />
@@ -43,14 +47,14 @@ export const CartList: FC<Props> = ({ editable = false }) => {
           <Grid item xs={7}>
             <Box display="flex" flexDirection="column">
               <Typography variant="body1">{product.title}</Typography>
-              <Typography variant="body1">
-                Talla: <strong>M</strong>
-              </Typography>
-              {editable ? (
-                <ItemCounter initial={1} />
+              <Typography variant="body1">Talla: {product.size}</Typography>
+              <Typography variant="body1">Cantidad: {product.quantity}</Typography>
+              {/* {editable ? (
+                <>
+                </>
               ) : (
-                <Typography variant="h5">3 items</Typography>
-              )}
+                <Typography variant="h5">{cart.length} productos</Typography>
+              )} */}
             </Box>
           </Grid>
           <Grid
@@ -61,7 +65,12 @@ export const CartList: FC<Props> = ({ editable = false }) => {
             flexDirection="column"
           >
             <Typography variant="subtitle1">${product.price}</Typography>
-            <Button variant="text" color="secondary" disabled={!editable}>
+            <Button
+              variant="text"
+              color="secondary"
+              disabled={!editable}
+              onClick={() => handleRemoveProduct(product)}
+            >
               Remover
             </Button>
           </Grid>
