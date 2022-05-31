@@ -11,8 +11,11 @@ import {
 import { CartList, OrderSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts';
 import NextLink from 'next/link';
+import { useContext } from 'react';
+import { CartContext } from '../../context';
 
 const SummaryPage = () => {
+  const {numberOfItems,subTotal,tax,total} = useContext(CartContext);
   return (
     <ShopLayout
       title="Resumen de compra"
@@ -28,7 +31,7 @@ const SummaryPage = () => {
         <Grid item xs={12} sm={5}>
           <Card className="summary-card">
             <CardContent>
-              <Typography variant="h2">Resumen: (3 productos)</Typography>
+              <Typography variant="h2">Resumen: {numberOfItems}</Typography>
               <Divider sx={{ my: 1 }} />
               <Box display="flex" justifyContent="space-between">
                 <Typography variant="subtitle1">

@@ -12,13 +12,17 @@ import { CartList, OrderSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts';
 import NextLink from 'next/link';
 import { CreditCardOffOutlined, CreditScoreOutlined } from '@mui/icons-material';
-import { FC } from 'react';
+import { FC, useContext } from 'react';
+import { CartContext } from '../../context';
 
 interface Props {
     
 }
 
 const OrderPage:FC<Props> = () => {
+
+  const { numberOfItems, subTotal, tax, total } = useContext(CartContext);
+
   return (
     <ShopLayout
       title="Resumen de la orden 123123123"
@@ -48,7 +52,7 @@ const OrderPage:FC<Props> = () => {
         <Grid item xs={12} sm={5}>
           <Card className="summary-card">
             <CardContent>
-              <Typography variant="h2">Resumen: (3 productos)</Typography>
+              <Typography variant="h2">Resumen: {numberOfItems}</Typography>
               <Divider sx={{ my: 1 }} />
               <Box display="flex" justifyContent="space-between">
                 <Typography variant="subtitle1">

@@ -19,8 +19,11 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { UiContext } from '../../context';
 import { useContext, useState } from 'react';
+import { CartContext } from '../../context/cart/CartContext';
 
 export const Navbar = () => {
+  const { numberOfItems } = useContext(CartContext);
+
   const { asPath, push } = useRouter();
 
   const { toogleSideMenu } = useContext(UiContext);
@@ -128,7 +131,10 @@ export const Navbar = () => {
         <NextLink href="/cart" passHref>
           <Link>
             <IconButton>
-              <Badge badgeContent={2} color="secondary">
+              <Badge
+                badgeContent={numberOfItems > 10 ? '10+' : numberOfItems}
+                color="secondary"
+              >
                 <ShoppingCartOutlined />
               </Badge>
             </IconButton>

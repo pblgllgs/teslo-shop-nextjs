@@ -7,10 +7,18 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
+import { useRouter } from 'next/router';
 import { CartList, OrderSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts';
 
 const CartPage = () => {
+
+  const {push} = useRouter();
+
+  const handleChekout = () => {
+    push('/checkout/summary');
+  }
+
   return (
     <ShopLayout
       title="Carrito"
@@ -30,7 +38,12 @@ const CartPage = () => {
               <Divider sx={{ my: 1 }} />
               <OrderSummary />
               <Box sx={{ mt: 3 }}>
-                <Button color="secondary" className="circular-btn" fullWidth>
+                <Button
+                  color="secondary"
+                  className="circular-btn"
+                  fullWidth
+                  onClick={handleChekout}
+                >
                   Checkout
                 </Button>
               </Box>
