@@ -13,7 +13,9 @@ import { useForm } from 'react-hook-form';
 import { validations } from '../../utils';
 import { tesloApi } from '../../api';
 import { ErrorOutline } from '@mui/icons-material';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { AuthContext } from '../../context';
+import { useRouter } from 'next/router';
 
 type FormData = {
   email: string;
@@ -21,7 +23,9 @@ type FormData = {
 };
 
 const LoginPage = () => {
+  const router = useRouter()
   const [showError, setShowError] = useState(false);
+  const { loginUser } = useContext(AuthContext);
 
   const {
     register,
@@ -31,17 +35,13 @@ const LoginPage = () => {
 
   const onLoginUser = async ({ email, password }: FormData) => {
     setShowError(false);
-    try {
-      const { data } = await tesloApi.post('/user/login',{ email, password });
-      const { token, user } = data;
-      console.log({token, user});
-    } catch (error) {
-      console.log('error en credenciales');
+    const isValidLogin = await loginUser(email, password);
+    if (!isValidLogin) {
       setShowError(true);
       setTimeout(() => setShowError(false), 3000);
+      return;
     }
-
-    //TODO: mavegar a la pantalla que corresponda
+    router.replace('/');
   };
 
   return (
@@ -58,7 +58,7 @@ const LoginPage = () => {
                 color="error"
                 icon={<ErrorOutline />}
                 className="fadeIn"
-                sx={{display: showError ? 'flex' : 'none'}}
+                sx={{ display: showError ? 'flex' : 'none' }}
               />
             </Grid>
             <Grid item xs={12}>
