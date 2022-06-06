@@ -21,7 +21,7 @@ interface Props {
 
 const OrderPage:FC<Props> = () => {
 
-  const { numberOfItems, subTotal, tax, total } = useContext(CartContext);
+  const { numberOfItems, subTotal, tax, total,shippingAddress } = useContext(CartContext);
 
   return (
     <ShopLayout

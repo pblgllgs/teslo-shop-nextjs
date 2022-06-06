@@ -1,4 +1,4 @@
-import { ChangeEvent, useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import {
   Box,
   Divider,
@@ -6,6 +6,7 @@ import {
   IconButton,
   Input,
   InputAdornment,
+  Link,
   List,
   ListItem,
   ListItemIcon,
@@ -24,10 +25,12 @@ import {
   SearchOutlined,
   VpnKeyOutlined,
 } from '@mui/icons-material';
-import { UiContext } from '../../context';
+import { AuthContext, UiContext } from '../../context';
 import { useRouter } from 'next/router';
+import { PersonalPanel,AdminPanel } from './';
 
 export const SideMenu = () => {
+  const { isLoggedIn, user, logoutUser } = useContext(AuthContext);
   const router = useRouter();
 
   const { isMenuOpen, toogleSideMenu } = useContext(UiContext);
@@ -46,6 +49,13 @@ export const SideMenu = () => {
     router.push(url);
   };
 
+  const onLogout = () => {
+    toogleSideMenu();
+    logoutUser();
+    router.replace('/');
+    navigateTo('/');
+  };
+
   return (
     <Drawer
       open={isMenuOpen}
@@ -59,8 +69,8 @@ export const SideMenu = () => {
             <Input
               value={searchTerm}
               autoFocus
-              onChange={(e) =>setSearchTerm(e.target.value)}
-              onKeyPress={(e)=> e.key === 'Enter' ? onSearchTerm() : null}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyPress={(e) => (e.key === 'Enter' ? onSearchTerm() : null)}
               type="text"
               placeholder="Buscar..."
               endAdornment={
@@ -73,19 +83,7 @@ export const SideMenu = () => {
             />
           </ListItem>
 
-          <ListItem button>
-            <ListItemIcon>
-              <AccountCircleOutlined />
-            </ListItemIcon>
-            <ListItemText primary={'Perfil'} />
-          </ListItem>
-
-          <ListItem button>
-            <ListItemIcon>
-              <ConfirmationNumberOutlined />
-            </ListItemIcon>
-            <ListItemText primary={'Mis Ordenes'} />
-          </ListItem>
+          {isLoggedIn && <PersonalPanel />}
 
           <ListItem
             onClick={() => navigateTo('/category/men')}
@@ -120,43 +118,23 @@ export const SideMenu = () => {
             <ListItemText primary={'Niños'} />
           </ListItem>
 
-          <ListItem button>
-            <ListItemIcon>
-              <VpnKeyOutlined />
-            </ListItemIcon>
-            <ListItemText primary={'Ingresar'} />
-          </ListItem>
+          {isLoggedIn ? (
+            <ListItem button onClick={onLogout}>
+              <ListItemIcon>
+                <LoginOutlined />
+              </ListItemIcon>
+              <ListItemText primary={'Salir'} />
+            </ListItem>
+          ) : (
+            <ListItem button onClick={() => navigateTo(`/auth/login?destination=${router.asPath}`)}>
+              <ListItemIcon>
+                <VpnKeyOutlined />
+              </ListItemIcon>
+              <ListItemText primary={'Ingresar'} />
+            </ListItem>
+          )}
 
-          <ListItem button>
-            <ListItemIcon>
-              <LoginOutlined />
-            </ListItemIcon>
-            <ListItemText primary={'Salir'} />
-          </ListItem>
-
-          {/* Admin */}
-          <Divider />
-          <ListSubheader>Admin Panel</ListSubheader>
-
-          <ListItem button>
-            <ListItemIcon>
-              <CategoryOutlined />
-            </ListItemIcon>
-            <ListItemText primary={'Productos'} />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <ConfirmationNumberOutlined />
-            </ListItemIcon>
-            <ListItemText primary={'Ordenes'} />
-          </ListItem>
-
-          <ListItem button>
-            <ListItemIcon>
-              <AdminPanelSettings />
-            </ListItemIcon>
-            <ListItemText primary={'Usuarios'} />
-          </ListItem>
+          {user?.role === 'admin' && <AdminPanel />}
         </List>
       </Box>
     </Drawer>

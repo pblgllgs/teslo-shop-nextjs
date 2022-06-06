@@ -13,9 +13,15 @@ import { ShopLayout } from '../../components/layouts';
 import NextLink from 'next/link';
 import { useContext } from 'react';
 import { CartContext } from '../../context';
+import { countries } from '../../utils';
 
 const SummaryPage = () => {
-  const {numberOfItems,subTotal,tax,total} = useContext(CartContext);
+  const {numberOfItems,subTotal,tax,total, shippingAddress} = useContext(CartContext);
+  if(!shippingAddress){
+    return <></>;
+  }
+  const {firstName,lastName,address,address2 = '',zip,city,country,phone} = shippingAddress;
+
   return (
     <ShopLayout
       title="Resumen de compra"
@@ -31,7 +37,10 @@ const SummaryPage = () => {
         <Grid item xs={12} sm={5}>
           <Card className="summary-card">
             <CardContent>
-              <Typography variant="h2">Resumen: {numberOfItems}</Typography>
+              <Typography variant="h2">
+                Resumen: {numberOfItems}{' '}
+                {numberOfItems > 1 ? 'productos' : 'producto'}
+              </Typography>
               <Divider sx={{ my: 1 }} />
               <Box display="flex" justifyContent="space-between">
                 <Typography variant="subtitle1">
@@ -41,11 +50,16 @@ const SummaryPage = () => {
                   <Link underline="always">Editar</Link>
                 </NextLink>
               </Box>
-              <Typography variant="body1">{'Juan Perez'}</Typography>
-              <Typography variant="body1">{'Av. Siempre Viva 123'}</Typography>
-              <Typography variant="body1">{'Santiago'}</Typography>
-              <Typography variant="body1">{'Chile'}</Typography>
-              <Typography variant="body1">{'+56 9 12345678'}</Typography>
+              <Typography variant="body1">
+                {firstName} {lastName}
+              </Typography>
+              <Typography variant="body1">{address}</Typography>
+              <Typography variant="body1">{city}</Typography>
+              <Typography variant="body1">
+                {countries.find((c) => c.code === country)?.name}
+              </Typography>
+              <Typography variant="body1">{zip}</Typography>
+              <Typography variant="body1">{phone}</Typography>
               <Divider sx={{ my: 1 }} />
               <Box display="flex" justifyContent="end">
                 <NextLink href="/cart" passHref>

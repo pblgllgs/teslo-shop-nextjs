@@ -1,12 +1,13 @@
-import { PlaylistAddOutlined } from '@mui/icons-material';
 import { ICartProduct } from '../../interfaces';
-import { CartState } from './CartProvider';
+import { CartState, ShippingAddress } from './CartProvider';
 
 type CartActionType =
     | { type: '[Cart] - Update products in cart', payload: ICartProduct[] }
     | { type: '[Cart] - Loadcart from cookies | storage', payload: ICartProduct[] }
     | { type: '[Cart] - Change cart quantity', payload: ICartProduct }
     | { type: '[Cart] - Remove product in cart', payload: ICartProduct }
+    | { type: '[Cart] - Load Address from cookies', payload: ShippingAddress }
+    | { type: '[Cart] - Update Address', payload: ShippingAddress }
     | {
         type: '[Cart] - Update order summary', payload: {
             numberOfItems: number;
@@ -26,6 +27,7 @@ export const cartReducer = (state: CartState, action: CartActionType): CartState
         case '[Cart] - Loadcart from cookies | storage':
             return {
                 ...state,
+                isLoaded: true,
                 cart: [...action.payload]
             }
         case '[Cart] - Change cart quantity':
@@ -46,11 +48,17 @@ export const cartReducer = (state: CartState, action: CartActionType): CartState
                     // if(product._id === action.payload._id && product.size !== action.payload.size) return product;
                 )
             }
-            case '[Cart] - Update order summary':
-                return {
-                    ...state,
-                    ...action.payload
-                }
+        case '[Cart] - Update order summary':
+            return {
+                ...state,
+                ...action.payload
+            }
+        case '[Cart] - Update Address':
+        case '[Cart] - Load Address from cookies':
+            return {
+                ...state,
+                shippingAddress: action.payload
+            }
         default:
             return state;
     }
