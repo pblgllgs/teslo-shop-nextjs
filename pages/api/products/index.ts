@@ -9,7 +9,7 @@ type Data =
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     switch (req.method) {
         case 'GET':
-            return getproducts(req, res)
+            return getProducts(req, res)
         default:
             return res.status(400).json({
                 message: 'Error, contacte al administrador',
@@ -17,7 +17,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
     }
 }
 
-const getproducts = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+const getProducts = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     const { gender = 'all' } = req.query;
     let condition = {};
     if (gender !== 'all' && SHOP_CONTANTS.validGenders.includes(`${gender}`)) {

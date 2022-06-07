@@ -11,7 +11,7 @@ import {
 import { CartList, OrderSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts';
 import NextLink from 'next/link';
-import { CreditCardOffOutlined, CreditScoreOutlined } from '@mui/icons-material';
+import { CreditScoreOutlined } from '@mui/icons-material';
 import { FC, useContext } from 'react';
 import { CartContext } from '../../context';
 

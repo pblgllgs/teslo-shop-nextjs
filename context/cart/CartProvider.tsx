@@ -109,7 +109,7 @@ export const CartProvider: FC<Props> = ({ children }) => {
     });
   }, [state.cart]);
 
-  const addProductToCart = (product: ICartProduct) => {
+  const addProductsToCart = (product: ICartProduct) => {
     const productInCart = state.cart.some((p) => p._id === product._id);
     if (!productInCart)
       return dispatch({
@@ -165,7 +165,7 @@ export const CartProvider: FC<Props> = ({ children }) => {
     <CartContext.Provider
       value={{
         ...state,
-        addProductToCart,
+        addProductsToCart,
         removeCartProduct,
         updateCartQuantity,
         updateAddress,
