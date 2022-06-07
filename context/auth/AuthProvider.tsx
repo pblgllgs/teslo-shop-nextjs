@@ -5,6 +5,7 @@ import { FC, ReactNode, useReducer, useEffect } from 'react';
 import { tesloApi } from '../../api';
 import { IUser } from '../../interfaces';
 import { AuthContext, authReducer } from './';
+import { useSession, signOut } from 'next-auth/react';
 
 export interface AuthState {
   isLoggedIn: boolean;
@@ -26,27 +27,38 @@ export interface RegisterProps {
 }
 
 export const AuthProvider: FC<Props> = ({ children }) => {
+  const { data, status } = useSession();
+
   const router = useRouter();
   const [state, dispatch] = useReducer(authReducer, Auth_INITIAL_STATE);
 
   useEffect(() => {
-    checkToken();
-  }, []);
+    if (status === 'authenticated') {
+      //TODO: borrar este clg
+      console.log(data?.user);
+      dispatch({ type: '[Auth] - Login', payload: data.user as IUser });
+    }
+  }, [status, data]);
 
-  const checkToken = async () => {
-    if (!Cookies.get('token')) {
-      return;
-    }
-    try {
-      const { data } = await tesloApi.get('/user/validate-token');
-      const { token, user } = data;
-      Cookies.set('token', token);
-      dispatch({ type: '[Auth] - Login', payload: user });
-    } catch (error) {
-      Cookies.remove('token');
-      dispatch({ type: '[Auth] - Logout' });
-    }
-  };
+  // autenticación personalizada sin next-auth
+  // useEffect(() => {
+  //   checkToken();
+  // }, []);
+
+  // const checkToken = async () => {
+  //   if (!Cookies.get('token')) {
+  //     return;
+  //   }
+  //   try {
+  //     const { data } = await tesloApi.get('/user/validate-token');
+  //     const { token, user } = data;
+  //     Cookies.set('token', token);
+  //     dispatch({ type: '[Auth] - Login', payload: user });
+  //   } catch (error) {
+  //     Cookies.remove('token');
+  //     dispatch({ type: '[Auth] - Logout' });
+  //   }
+  // };
 
   const loginUser = async (
     email: string,
@@ -96,7 +108,8 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   };
 
   const logoutUser = () => {
-    Cookies.remove('token');
+    // Cookies.remove('token');
+    // router.reload();
     Cookies.remove('cart');
     Cookies.remove('firstName');
     Cookies.remove('lastName');
@@ -106,7 +119,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     Cookies.remove('city');
     Cookies.remove('country');
     Cookies.remove('phone');
-    router.reload();
+    signOut();
   };
 
   return (

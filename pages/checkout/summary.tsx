@@ -11,12 +11,21 @@ import {
 import { CartList, OrderSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts';
 import NextLink from 'next/link';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { CartContext } from '../../context';
 import { countries } from '../../utils';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
 
 const SummaryPage = () => {
-  const {numberOfItems,subTotal,tax,total, shippingAddress} = useContext(CartContext);
+  const {numberOfItems, shippingAddress} = useContext(CartContext);
+  const router = useRouter()
+  useEffect(() => {
+    if (!Cookies.get('firstName')) {
+      router.push('/checkout/address');
+    }
+  }, [router]);
+  
   if(!shippingAddress){
     return <></>;
   }
@@ -56,7 +65,8 @@ const SummaryPage = () => {
               <Typography variant="body1">{address}</Typography>
               <Typography variant="body1">{city}</Typography>
               <Typography variant="body1">
-                {countries.find((c) => c.code === country)?.name}
+                {/* {countries.find((c) => c.code === country)?.name} */}
+                {country}
               </Typography>
               <Typography variant="body1">{zip}</Typography>
               <Typography variant="body1">{phone}</Typography>
