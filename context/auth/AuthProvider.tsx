@@ -27,9 +27,6 @@ export interface RegisterProps {
 }
 
 export const AuthProvider: FC<Props> = ({ children }) => {
-  const { data, status } = useSession();
-
-  const router = useRouter();
   const [state, dispatch] = useReducer(authReducer, Auth_INITIAL_STATE);
   const router = useRouter();
 
@@ -109,7 +106,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     }
   };
 
-  const logoutUser = () => {
+  const logout = () => {
     // Cookies.remove('token');
     // router.reload();
     Cookies.remove('cart');
