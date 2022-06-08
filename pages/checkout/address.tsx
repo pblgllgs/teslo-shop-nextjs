@@ -4,6 +4,7 @@ import {
   FormControl,
   Grid,
   MenuItem,
+  Select,
   TextField,
   Typography,
 } from '@mui/material';
@@ -12,8 +13,8 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { ShopLayout } from '../../components/layouts';
-import { countries } from '../../utils';
-import { CartContext } from '../../context/cart/CartContext';
+import { CartContext } from '../../context';
+import { countries } from '../../utils/countries';
 
 type FormData = {
   firstName: string;
@@ -26,7 +27,7 @@ type FormData = {
   phone: string;
 };
 
-const getAddressFromCookies = (): FormData => {
+const getAddressFromCookies = () => {
   return {
     firstName: Cookies.get('firstName') || '',
     lastName: Cookies.get('lastName') || '',
@@ -40,8 +41,10 @@ const getAddressFromCookies = (): FormData => {
 };
 
 const AddressPage = () => {
-  const { updateAddress } = useContext(CartContext);
   const router = useRouter();
+
+  const { updateAddress } = useContext(CartContext);
+
   const {
     register,
     handleSubmit,
@@ -55,7 +58,7 @@ const AddressPage = () => {
       address2: '',
       zip: '',
       city: '',
-      country: '',
+      country: countries[0].code,
       phone: '',
     },
   });
@@ -168,18 +171,19 @@ const AddressPage = () => {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            {/* <FormControl fullWidth> */}
+            <FormControl fullWidth>
               <TextField
-                // select
+                key={Cookies.get('country') || countries[0].code}
+                select
                 variant="filled"
                 label="País"
                 fullWidth
-                // defaultValue={Cookies.get('country') || countries[0].code}
+                defaultValue={Cookies.get('country') || countries[0].code}
                 {...register('country', {
                   required: 'El país es requerido',
                 })}
                 error={!!errors.country}
-                helperText={errors.country?.message}
+                // helperText={errors.country?.message}
               >
                 {countries.map((country) => (
                   <MenuItem key={country.code} value={country.code}>
@@ -187,7 +191,7 @@ const AddressPage = () => {
                   </MenuItem>
                 ))}
               </TextField>
-            {/* </FormControl> */}
+            </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
@@ -220,30 +224,5 @@ const AddressPage = () => {
     </ShopLayout>
   );
 };
-
-// You should use getServerSideProps when:
-// - Only if you need to pre-render a page whose data must be fetched at request time
-
-// export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-//   const { token = '' } = req.cookies;
-//   let isValidToken = false;
-//   try {
-//     await jwt.isValidToken(token);
-//     isValidToken = true;
-//   } catch (error) {
-//     isValidToken = false;
-//   }
-//   if (!isValidToken) {
-//     return {
-//       redirect: {
-//         destination: '/auth/login?p=/checkout/address',
-//         permanent: false,
-//       },
-//     };
-//   }
-//   return {
-//     props: {},
-//   };
-// };
 
 export default AddressPage;
