@@ -38,7 +38,7 @@ const RegisterPage = () => {
 
   const onRegisterForm = async ({ email, password, name }: FormData) => {
     setShowError(false);
-    const {hasError, message} = await registerUser(name, email, password);
+    const { hasError, message } = await registerUser(name, email, password);
     console.log(hasError, message);
     if (hasError) {
       setShowError(true);
@@ -130,6 +130,20 @@ const RegisterPage = () => {
                 Registro
               </Button>
             </Grid>
+            {/* <Grid item xs={12} textAlign="center">
+              <NextLink
+                href={
+                  router.query.p
+                    ? `/auth/login?p=${router.query.p}`
+                    : '/auth/login'
+                }
+                passHref
+              >
+                <Link underline="always">
+                  ¿Ya tienes una cuenta?,Inicia sesión aquí...
+                </Link>
+              </NextLink>
+            </Grid> */}
             <Grid item xs={12} textAlign="center">
               <NextLink href={
                   router.query.p

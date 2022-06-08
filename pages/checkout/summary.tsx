@@ -53,7 +53,7 @@ const SummaryPage = () => {
               <Divider sx={{ my: 1 }} />
               <Box display="flex" justifyContent="space-between">
                 <Typography variant="subtitle1">
-                  {'Dirección de entrega'}
+                  Dirección de entrega
                 </Typography>
                 <NextLink href="/checkout/address" passHref>
                   <Link underline="always">Editar</Link>

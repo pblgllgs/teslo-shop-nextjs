@@ -23,6 +23,20 @@ export interface CartState {
   tax: number;
   total: number;
   shippingAddress?: ShippingAddress;
+<<<<<<< HEAD
+=======
+}
+
+export interface ShippingAddress {
+  firstName: string;
+  lastName: string;
+  address: string;
+  address2?: string;
+  zip: string;
+  city: string;
+  country: string;
+  phone: string;
+>>>>>>> fase-3
 }
 
 const CART_INITIAL_STATE: CartState = {
@@ -152,6 +166,21 @@ export const CartProvider: FC<Props> = ({ children }) => {
       type: '[Cart] - Update Address',
       payload: newAddress,
     })
+  };
+
+  const updateAddress = (data: ShippingAddress) => {
+    Cookies.set('firstName', data.firstName);
+    Cookies.set('lastName', data.lastName);
+    Cookies.set('address', data.address);
+    Cookies.set('address2', data.address2 || '');
+    Cookies.set('zip', data.zip);
+    Cookies.set('city', data.city);
+    Cookies.set('country', data.country);
+    Cookies.set('phone', data.phone);
+    dispatch({
+      type: '[Cart] - Update shipping address',
+      payload: data,
+    });
   };
 
   const updateCartQuantity = (product: ICartProduct) => {

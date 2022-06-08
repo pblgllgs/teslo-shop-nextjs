@@ -26,7 +26,6 @@ type FormData = {
 const LoginPage = () => {
   const router = useRouter();
   const [showError, setShowError] = useState(false);
-
   const [providers, setProviders] = useState<any>({});
 
   useEffect(() => {
@@ -115,6 +114,20 @@ const LoginPage = () => {
                 Iniciar Sesión
               </Button>
             </Grid>
+            {/* <Grid item xs={12} alignContent="center" textAlign="center">
+              <NextLink
+                href={
+                  router.query.p
+                    ? `/auth/register?p=${router.query.p}`
+                    : '/auth/register'
+                }
+                passHref
+              >
+                <Link underline="always">
+                  No tienes una cuenta, crea una aquí...
+                </Link>
+              </NextLink>
+            </Grid> */}
             <Grid item xs={12} alignContent="center" textAlign="center">
               <NextLink
                 href={
@@ -165,16 +178,14 @@ const LoginPage = () => {
 // You should use getServerSideProps when:
 // - Only if you need to pre-render a page whose data must be fetched at request time
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  query,
-}) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const {req} = ctx as {req: any};
   const session = await getSession({ req });
-  const { p = '/' } = query;
+  // const { p } = query;
   if (session) {
     return {
       redirect: {
-        destination: p.toString(),
+        destination: '/',
         permanent: false,
       },
     };

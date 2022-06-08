@@ -1,4 +1,8 @@
 import { useContext, useState } from 'react';
+<<<<<<< HEAD
+=======
+
+>>>>>>> fase-3
 import {
   Box,
   Divider,
@@ -25,22 +29,25 @@ import {
   SearchOutlined,
   VpnKeyOutlined,
 } from '@mui/icons-material';
+<<<<<<< HEAD
 import { AuthContext, UiContext } from '../../context';
+=======
+
+import { UiContext, AuthContext } from '../../context';
+>>>>>>> fase-3
 import { useRouter } from 'next/router';
 import { PersonalPanel,AdminPanel } from './';
 
 export const SideMenu = () => {
   const { isLoggedIn, user, logoutUser } = useContext(AuthContext);
   const router = useRouter();
-
   const { isMenuOpen, toogleSideMenu } = useContext(UiContext);
+  const { user, isLoggedIn, logout } = useContext(AuthContext);
 
   const [searchTerm, setSearchTerm] = useState('');
 
   const onSearchTerm = () => {
-    if (searchTerm.trim().length === 0) {
-      return;
-    }
+    if (searchTerm.trim().length === 0) return;
     navigateTo(`/search/${searchTerm}`);
   };
 
@@ -59,16 +66,19 @@ export const SideMenu = () => {
   return (
     <Drawer
       open={isMenuOpen}
-      onClose={toogleSideMenu}
       anchor="right"
       sx={{ backdropFilter: 'blur(4px)', transition: 'all 0.5s ease-out' }}
+      onClose={toogleSideMenu}
     >
       <Box sx={{ width: 250, paddingTop: 5 }}>
         <List>
           <ListItem>
             <Input
-              value={searchTerm}
               autoFocus
+<<<<<<< HEAD
+=======
+              value={searchTerm}
+>>>>>>> fase-3
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyPress={(e) => (e.key === 'Enter' ? onSearchTerm() : null)}
               type="text"
@@ -83,12 +93,32 @@ export const SideMenu = () => {
             />
           </ListItem>
 
+<<<<<<< HEAD
           {isLoggedIn && <PersonalPanel />}
+=======
+          {isLoggedIn && (
+            <>
+              <ListItem button>
+                <ListItemIcon>
+                  <AccountCircleOutlined />
+                </ListItemIcon>
+                <ListItemText primary={'Perfil'} />
+              </ListItem>
+
+              <ListItem button>
+                <ListItemIcon>
+                  <ConfirmationNumberOutlined />
+                </ListItemIcon>
+                <ListItemText primary={'Mis Ordenes'} />
+              </ListItem>
+            </>
+          )}
+>>>>>>> fase-3
 
           <ListItem
-            onClick={() => navigateTo('/category/men')}
             button
             sx={{ display: { xs: '', sm: 'none' } }}
+            onClick={() => navigateTo('/category/men')}
           >
             <ListItemIcon>
               <MaleOutlined />
@@ -97,9 +127,9 @@ export const SideMenu = () => {
           </ListItem>
 
           <ListItem
-            onClick={() => navigateTo('/category/women')}
             button
             sx={{ display: { xs: '', sm: 'none' } }}
+            onClick={() => navigateTo('/category/women')}
           >
             <ListItemIcon>
               <FemaleOutlined />
@@ -108,9 +138,9 @@ export const SideMenu = () => {
           </ListItem>
 
           <ListItem
-            onClick={() => navigateTo('/category/kid')}
             button
             sx={{ display: { xs: '', sm: 'none' } }}
+            onClick={() => navigateTo('/category/kid')}
           >
             <ListItemIcon>
               <EscalatorWarningOutlined />
@@ -126,7 +156,14 @@ export const SideMenu = () => {
               <ListItemText primary={'Salir'} />
             </ListItem>
           ) : (
+<<<<<<< HEAD
             <ListItem button onClick={() => navigateTo(`/auth/login?destination=${router.asPath}`)}>
+=======
+            <ListItem
+              button
+              onClick={() => navigateTo(`/auth/login?p=${router.asPath}`)}
+            >
+>>>>>>> fase-3
               <ListItemIcon>
                 <VpnKeyOutlined />
               </ListItemIcon>
@@ -134,7 +171,37 @@ export const SideMenu = () => {
             </ListItem>
           )}
 
+<<<<<<< HEAD
           {user?.role === 'admin' && <AdminPanel />}
+=======
+          {/* Admin */}
+          {user?.role === 'admin' && (
+            <>
+              <Divider />
+              <ListSubheader>Admin Panel</ListSubheader>
+
+              <ListItem button>
+                <ListItemIcon>
+                  <CategoryOutlined />
+                </ListItemIcon>
+                <ListItemText primary={'Productos'} />
+              </ListItem>
+              <ListItem button>
+                <ListItemIcon>
+                  <ConfirmationNumberOutlined />
+                </ListItemIcon>
+                <ListItemText primary={'Ordenes'} />
+              </ListItem>
+
+              <ListItem button>
+                <ListItemIcon>
+                  <AdminPanelSettings />
+                </ListItemIcon>
+                <ListItemText primary={'Usuarios'} />
+              </ListItem>
+            </>
+          )}
+>>>>>>> fase-3
         </List>
       </Box>
     </Drawer>

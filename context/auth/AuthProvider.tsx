@@ -31,7 +31,9 @@ export const AuthProvider: FC<Props> = ({ children }) => {
 
   const router = useRouter();
   const [state, dispatch] = useReducer(authReducer, Auth_INITIAL_STATE);
+  const router = useRouter();
 
+  const { data, status } = useSession();
   useEffect(() => {
     if (status === 'authenticated') {
       //TODO: borrar este clg
@@ -124,7 +126,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ ...state, loginUser, registerUser, logoutUser }}
+      value={{ ...state, loginUser, registerUser, logout }}
     >
       {children}
     </AuthContext.Provider>
