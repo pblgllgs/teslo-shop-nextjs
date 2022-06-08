@@ -5,6 +5,7 @@ import { ISize } from '../../interfaces';
 interface Props {
   selectedSize?: ISize;
   sizes: ISize[];
+  disabled: boolean;
 
   onSelectedSize: (size: ISize) => void;
 }
