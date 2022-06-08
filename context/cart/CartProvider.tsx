@@ -4,6 +4,16 @@ import { FC, ReactNode, useEffect, useReducer } from 'react';
 import { ICartProduct } from '../../interfaces';
 import { cartReducer, CartContext } from './';
 
+export interface CartState {
+  isLoaded: boolean;
+  cart: ICartProduct[];
+  numberOfItems: number;
+  subTotal: number;
+  tax: number;
+  total: number;
+  shippingAddress?: ShippingAddress;
+}
+
 export interface ShippingAddress {
   firstName: string;
   lastName: string;
@@ -13,16 +23,6 @@ export interface ShippingAddress {
   city: string;
   country: string;
   phone: string;
-}
-
-export interface CartState {
-  isLoaded: boolean;
-  cart: ICartProduct[];
-  numberOfItems: number;
-  subTotal: number;
-  tax: number;
-  total: number;
-  shippingAddress?: ShippingAddress;
 }
 
 const CART_INITIAL_STATE: CartState = {
@@ -43,19 +43,19 @@ export const CartProvider: FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, CART_INITIAL_STATE);
 
   useEffect(() => {
-    if (Cookie.get('firstName')) {
+    if (Cookies.get('firstName')) {
       const shippingAddress = {
-        firstName: Cookie.get('firstName') || '',
-        lastName: Cookie.get('lastName') || '',
-        address: Cookie.get('address') || '',
-        address2: Cookie.get('address2') || '',
-        zip: Cookie.get('zip') || '',
-        city: Cookie.get('city') || '',
-        country: Cookie.get('country') || '',
-        phone: Cookie.get('phone') || '',
+        firstName: Cookies.get('firstName') || '',
+        lastName: Cookies.get('lastName') || '',
+        address: Cookies.get('address') || '',
+        address2: Cookies.get('address2') || '',
+        zip: Cookies.get('zip') || '',
+        city: Cookies.get('city') || '',
+        country: Cookies.get('country') || '',
+        phone: Cookies.get('phone') || '',
       };
       dispatch({
-        type: '[Cart] - Update shipping address',
+        type: '[Cart] - Load addres from cookies',
         payload: shippingAddress,
       });
     }
@@ -96,7 +96,7 @@ export const CartProvider: FC<Props> = ({ children }) => {
       (prev, current) => prev + current.price * current.quantity,
       0
     );
-    const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE || 0);
+    const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE);
     const orderSummary = {
       numberOfItems,
       subTotal,
@@ -109,49 +109,52 @@ export const CartProvider: FC<Props> = ({ children }) => {
     });
   }, [state.cart]);
 
-  const addProductsToCart = (product: ICartProduct) => {
-    const productInCart = state.cart.some((p) => p._id === product._id);
+  const addProductsToCart = (newProduct: ICartProduct) => {
+    const productInCart = state.cart.some(
+      (product) => product._id === newProduct._id
+    );
     if (!productInCart)
       return dispatch({
         type: '[Cart] - Update products in cart',
-        payload: [...state.cart, product],
+        payload: [...state.cart, newProduct],
       });
 
     const productInCartButDifferentSize = state.cart.some(
-      (p) => p._id === product._id && p.size === product.size
+      (product) =>
+        product._id === newProduct._id && product.size === newProduct.size
     );
     if (!productInCartButDifferentSize)
       return dispatch({
         type: '[Cart] - Update products in cart',
-        payload: [...state.cart, product],
+        payload: [...state.cart, newProduct],
       });
 
-    const updatedProducts = state.cart.map((p) => {
-      if (p._id !== product._id) return p;
-      if (p.size !== product.size) return p;
+    const updatedProducts = state.cart.map((product) => {
+      if (product._id !== newProduct._id) return product;
+      if (product.size !== newProduct.size) return product;
 
-      // Actualizar la cantidad
-      p.quantity += product.quantity;
-      return p;
+      product.quantity += newProduct.quantity;
+      return product;
     });
     dispatch({
       type: '[Cart] - Update products in cart',
       payload: updatedProducts,
     });
   };
-  const updateAddress = (newAddress: ShippingAddress) => {
-     Cookies.set('firstName', newAddress.firstName);
-     Cookies.set('lastName', newAddress.lastName);
-     Cookies.set('address', newAddress.address);
-     Cookies.set('address2', newAddress.address2 || '');
-     Cookies.set('zip', newAddress.zip);
-     Cookies.set('city', newAddress.city);
-     Cookies.set('country', newAddress.country);
-     Cookies.set('phone', newAddress.phone);
+
+  const updateAddress = (data: ShippingAddress) => {
+    Cookies.set('firstName', data.firstName);
+    Cookies.set('lastName', data.lastName);
+    Cookies.set('address', data.address);
+    Cookies.set('address2', data.address2 || '');
+    Cookies.set('zip', data.zip);
+    Cookies.set('city', data.city);
+    Cookies.set('country', data.country);
+    Cookies.set('phone', data.phone);
     dispatch({
       type: '[Cart] - Update shipping address',
-      payload: newAddress,
-    })
+      payload: data,
+    });
   };
 
   const updateCartQuantity = (product: ICartProduct) => {
