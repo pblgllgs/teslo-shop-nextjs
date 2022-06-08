@@ -13,23 +13,33 @@ import { ShopLayout } from '../../components/layouts';
 import NextLink from 'next/link';
 import { useContext, useEffect } from 'react';
 import { CartContext } from '../../context';
-import { countries } from '../../utils';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
+import { countries } from '../../utils/countries';
 
 const SummaryPage = () => {
-  const {numberOfItems, shippingAddress} = useContext(CartContext);
-  const router = useRouter()
+  const { numberOfItems, shippingAddress } = useContext(CartContext);
+  const router = useRouter();
+
   useEffect(() => {
     if (!Cookies.get('firstName')) {
       router.push('/checkout/address');
     }
   }, [router]);
-  
-  if(!shippingAddress){
+
+  if (!shippingAddress) {
     return <></>;
   }
-  const {firstName,lastName,address,address2 = '',zip,city,country,phone} = shippingAddress;
+  const {
+    firstName,
+    lastName,
+    address,
+    address2 = '',
+    zip,
+    city,
+    country,
+    phone,
+  } = shippingAddress;
 
   return (
     <ShopLayout
@@ -65,8 +75,7 @@ const SummaryPage = () => {
               <Typography variant="body1">{address}</Typography>
               <Typography variant="body1">{city}</Typography>
               <Typography variant="body1">
-                {/* {countries.find((c) => c.code === country)?.name} */}
-                {country}
+                {countries.find((c) => c.code === country)?.name}
               </Typography>
               <Typography variant="body1">{zip}</Typography>
               <Typography variant="body1">{phone}</Typography>
