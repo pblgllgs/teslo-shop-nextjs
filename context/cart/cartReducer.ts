@@ -6,13 +6,8 @@ type CartActionType =
     | { type: '[Cart] - Loadcart from cookies | storage', payload: ICartProduct[] }
     | { type: '[Cart] - Change cart quantity', payload: ICartProduct }
     | { type: '[Cart] - Remove product in cart', payload: ICartProduct }
-<<<<<<< HEAD
     | { type: '[Cart] - Load Address from cookies', payload: ShippingAddress }
     | { type: '[Cart] - Update Address', payload: ShippingAddress }
-=======
-    | { type: '[Cart] - Load addres from cookies', payload: ShippingAddress }
-    | { type: '[Cart] - Update shipping address', payload: ShippingAddress }
->>>>>>> fase-3
     | {
         type: '[Cart] - Update order summary', payload: {
             numberOfItems: number;
