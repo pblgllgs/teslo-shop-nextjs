@@ -107,8 +107,6 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   };
 
   const logout = () => {
-    // Cookies.remove('token');
-    // router.reload();
     Cookies.remove('cart');
     Cookies.remove('firstName');
     Cookies.remove('lastName');
@@ -118,7 +116,10 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     Cookies.remove('city');
     Cookies.remove('country');
     Cookies.remove('phone');
+    Cookies.remove('token');
+
     signOut();
+    // router.reload();
   };
 
   return (
