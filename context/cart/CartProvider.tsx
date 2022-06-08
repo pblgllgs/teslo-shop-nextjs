@@ -43,7 +43,7 @@ export const CartProvider: FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, CART_INITIAL_STATE);
 
   useEffect(() => {
-    if(Cookies.get('firstName')){
+    if (Cookies.get('firstName')) {
       const shippingAddress = {
         firstName: Cookies.get('firstName') || '',
         lastName: Cookies.get('lastName') || '',
@@ -59,8 +59,7 @@ export const CartProvider: FC<Props> = ({ children }) => {
         payload: shippingAddress,
       });
     }
-  }, [])
-  
+  }, []);
 
   useEffect(() => {
     try {
