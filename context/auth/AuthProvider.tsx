@@ -33,21 +33,15 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   const { data, status } = useSession();
   useEffect(() => {
     if (status === 'authenticated') {
-      //TODO: borrar este clg
-      console.log(data?.user);
-      dispatch({ type: '[Auth] - Login', payload: data.user as IUser });
+      dispatch({ type: '[Auth] - Login', payload: data?.user as IUser });
     }
   }, [status, data]);
 
-  // autenticación personalizada sin next-auth
   // useEffect(() => {
   //   checkToken();
   // }, []);
 
   // const checkToken = async () => {
-  //   if (!Cookies.get('token')) {
-  //     return;
-  //   }
   //   try {
   //     const { data } = await tesloApi.get('/user/validate-token');
   //     const { token, user } = data;
@@ -123,9 +117,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{ ...state, loginUser, registerUser, logout }}
-    >
+    <AuthContext.Provider value={{ ...state, loginUser, registerUser, logout }}>
       {children}
     </AuthContext.Provider>
   );
