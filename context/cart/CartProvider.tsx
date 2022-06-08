@@ -60,6 +60,7 @@ export const CartProvider: FC<Props> = ({ children }) => {
       });
     }
   }, []);
+  
 
   useEffect(() => {
     try {
