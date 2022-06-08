@@ -6,7 +6,7 @@ import { SWRConfig } from 'swr';
 import { AuthProvider, CartProvider, UiProvider } from '../context';
 import { SessionProvider } from 'next-auth/react';
 
-function MyApp({ Component, pageProps: {pageProps, session} }: AppProps) {
+function MyApp({ Component, pageProps: {session,...pageProps} }: AppProps) {
   return (
     <SessionProvider session={session}>
       <SWRConfig
