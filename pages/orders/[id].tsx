@@ -11,17 +11,17 @@ import {
 import { CartList, OrderSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts';
 import NextLink from 'next/link';
-import { CreditScoreOutlined } from '@mui/icons-material';
+import {
+  CreditCardOffOutlined,
+  CreditScoreOutlined,
+} from '@mui/icons-material';
 import { FC, useContext } from 'react';
 import { CartContext } from '../../context';
 
-interface Props {
-    
-}
+interface Props {}
 
-const OrderPage:FC<Props> = () => {
-
-  const { numberOfItems, subTotal, tax, total,shippingAddress } = useContext(CartContext);
+const OrderPage: FC<Props> = () => {
+  const { numberOfItems, subTotal, tax, total } = useContext(CartContext);
 
   return (
     <ShopLayout
