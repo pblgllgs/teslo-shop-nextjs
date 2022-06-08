@@ -55,7 +55,7 @@ export const CartProvider: FC<Props> = ({ children }) => {
         phone: Cookie.get('phone') || '',
       };
       dispatch({
-        type: '[Cart] - Load Address from cookies',
+        type: '[Cart] - Update shipping address',
         payload: shippingAddress,
       });
     }
@@ -149,7 +149,7 @@ export const CartProvider: FC<Props> = ({ children }) => {
      Cookies.set('country', newAddress.country);
      Cookies.set('phone', newAddress.phone);
     dispatch({
-      type: '[Cart] - Update Address',
+      type: '[Cart] - Update shipping address',
       payload: newAddress,
     })
   };
