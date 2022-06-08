@@ -13,8 +13,6 @@ export default NextAuth({
                 password: { label: 'Password', type: 'password', placeholder: 'xxxxxx' },
             },
             async authorize(credentials) {
-                //TODO: borrar este clg
-                console.log({ credentials })
                 return await dbUsers.checkUserEmailPassword(credentials!.email, credentials!.password);
             },
         }),
