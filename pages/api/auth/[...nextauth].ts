@@ -2,7 +2,7 @@ import NextAuth from "next-auth"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials"
-import { dbUsers } from "../../../database"
+import { dbUsers } from "../../../database";
 
 export default NextAuth({
     providers: [
