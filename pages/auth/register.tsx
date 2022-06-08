@@ -46,7 +46,6 @@ const RegisterPage = () => {
       setTimeout(() => setShowError(false), 3000);
       return;
     }
-    // const destination = (router.query.destination as string) || '/';
     // const destination = router.query.p?.toString() || '/';
     // router.replace(destination);
     await signIn('credentials', {
@@ -145,10 +144,7 @@ const RegisterPage = () => {
               </NextLink>
             </Grid> */}
             <Grid item xs={12} textAlign="center">
-              <NextLink href={
-                  router.query.p
-                    ? `/auth/login?p=${router.query.p}`
-                    : '/auth/login'} passHref>
+              <NextLink href="/auth/login" passHref>
                 <Link underline="always">
                   ¿Ya tienes una cuenta?,Inicia sesión aquí...
                 </Link>
@@ -161,20 +157,19 @@ const RegisterPage = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  query,
-}) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { req } = ctx as { req: any };
   const session = await getSession({ req });
-  const { p = '/' } = query;
+  // const { p } = query;
   if (session) {
     return {
       redirect: {
-        destination: p.toString(),
+        destination: '/',
         permanent: false,
       },
     };
   }
+
   return {
     props: {},
   };
