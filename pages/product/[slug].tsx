@@ -82,9 +82,10 @@ const ProductPage: NextPage<Props> = ({ product }) => {
                 />
               )}
               <SizeSelector
-                // selectedSize={ product.sizes[2] }
+                selectedSize={tempCartProduct.size}
                 sizes={product.sizes}
                 onSelectedSize={(size) => selectedSize(size)}
+                disabled={product.inStock === 0}
               />
             </Box>
             <Button
@@ -161,5 +162,28 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     revalidate: 60 * 60 * 24,
   };
 };
+
+// You should use getServerSideProps when:
+// - Only if you need to pre-render a page whose data must be fetched at request time
+
+// export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+//   const { slug = '' } = params as { slug: string };
+//   const product = await getProductsBySlug(slug);
+
+//   if (!product) {
+//     return {
+//       redirect: {
+//         destination: '/404',
+//         permanent: false,
+//       },
+//     };
+//   }
+
+//   return {
+//     props: {
+//       product,
+//     },
+//   };
+// };
 
 export default ProductPage;
