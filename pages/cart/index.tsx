@@ -8,15 +8,27 @@ import {
   Typography,
 } from '@mui/material';
 import { useRouter } from 'next/router';
+import { useContext, useEffect } from 'react';
 import { CartList, OrderSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts';
+import { CartContext } from '../../context';
 
 const CartPage = () => {
+  const router = useRouter();
 
-  const {push} = useRouter();
+  const { isLoaded, cart } = useContext(CartContext);
+
+  useEffect(() => {
+    if (isLoaded && cart.length === 0) {
+      router.replace('/cart/empty');
+    }
+  }, [isLoaded, cart, router]);
 
   const handleChekout = () => {
-    push('/checkout/summary');
+    router.push('/checkout/summary');
+  };
+  if (!isLoaded || cart.length === 0) {
+    return <></>;
   }
 
   return (
@@ -42,6 +54,7 @@ const CartPage = () => {
                   color="secondary"
                   className="circular-btn"
                   fullWidth
+                  href='/checkout/address'
                   onClick={handleChekout}
                 >
                   Checkout

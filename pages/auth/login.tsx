@@ -23,7 +23,7 @@ type FormData = {
 };
 
 const LoginPage = () => {
-  const router = useRouter()
+  const router = useRouter();
   const [showError, setShowError] = useState(false);
   const { loginUser } = useContext(AuthContext);
 
@@ -41,7 +41,8 @@ const LoginPage = () => {
       setTimeout(() => setShowError(false), 3000);
       return;
     }
-    router.replace('/');
+    const destination = router.query.p?.toString() || '/';
+    router.replace(destination);
   };
 
   return (
@@ -103,7 +104,14 @@ const LoginPage = () => {
               </Button>
             </Grid>
             <Grid item xs={12} alignContent="center" textAlign="center">
-              <NextLink href="/auth/register" passHref>
+              <NextLink
+                href={
+                  router.query.p
+                    ? `/auth/register?p=${router.query.p}`
+                    : '/auth/register'
+                }
+                passHref
+              >
                 <Link underline="always">
                   No tienes una cuenta, crea una aquí...
                 </Link>
