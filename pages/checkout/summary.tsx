@@ -20,6 +20,7 @@ import { countries } from '../../utils/countries';
 const SummaryPage = () => {
   const { numberOfItems, shippingAddress } = useContext(CartContext);
   const router = useRouter();
+
   useEffect(() => {
     if (!Cookies.get('firstName')) {
       router.push('/checkout/address');

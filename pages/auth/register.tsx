@@ -16,6 +16,8 @@ import { ErrorOutline } from '@mui/icons-material';
 import { useContext } from 'react';
 import { AuthContext } from '../../context';
 import { useRouter } from 'next/router';
+import { getSession, signIn } from 'next-auth/react';
+import { GetServerSideProps } from 'next';
 
 type FormData = {
   email: string;
@@ -36,7 +38,7 @@ const RegisterPage = () => {
 
   const onRegisterForm = async ({ email, password, name }: FormData) => {
     setShowError(false);
-    const {hasError, message} = await registerUser(name, email, password);
+    const { hasError, message } = await registerUser(name, email, password);
     console.log(hasError, message);
     if (hasError) {
       setShowError(true);
@@ -44,8 +46,12 @@ const RegisterPage = () => {
       setTimeout(() => setShowError(false), 3000);
       return;
     }
-    const destination = router.query.p?.toString() || '/';
-    router.replace(destination);
+    // const destination = router.query.p?.toString() || '/';
+    // router.replace(destination);
+    await signIn('credentials', {
+      email,
+      password,
+    });
   };
 
   return (
@@ -123,7 +129,7 @@ const RegisterPage = () => {
                 Registro
               </Button>
             </Grid>
-            <Grid item xs={12} textAlign="center">
+            {/* <Grid item xs={12} textAlign="center">
               <NextLink
                 href={
                   router.query.p
@@ -136,12 +142,37 @@ const RegisterPage = () => {
                   ¿Ya tienes una cuenta?,Inicia sesión aquí...
                 </Link>
               </NextLink>
+            </Grid> */}
+            <Grid item xs={12} textAlign="center">
+              <NextLink href="/auth/login" passHref>
+                <Link underline="always">
+                  ¿Ya tienes una cuenta?,Inicia sesión aquí...
+                </Link>
+              </NextLink>
             </Grid>
           </Grid>
         </Box>
       </form>
     </AuthLayout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { req } = ctx as { req: any };
+  const session = await getSession({ req });
+  // const { p } = query;
+  if (session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default RegisterPage;
