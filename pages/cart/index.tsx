@@ -15,6 +15,7 @@ import { CartContext } from '../../context';
 
 const CartPage = () => {
   const router = useRouter();
+
   const { isLoaded, cart } = useContext(CartContext);
 
   useEffect(() => {
@@ -23,6 +24,9 @@ const CartPage = () => {
     }
   }, [isLoaded, cart, router]);
 
+  const handleChekout = () => {
+    router.push('/checkout/summary');
+  };
   if (!isLoaded || cart.length === 0) {
     return <></>;
   }
@@ -50,7 +54,8 @@ const CartPage = () => {
                   color="secondary"
                   className="circular-btn"
                   fullWidth
-                  href='/checkout/address'
+                  href="/checkout/address"
+                  onClick={handleChekout}
                 >
                   Checkout
                 </Button>
