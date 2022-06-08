@@ -13,10 +13,10 @@ import NextLink from 'next/link';
 import { useForm } from 'react-hook-form';
 import { validations } from '../../utils';
 import { ErrorOutline } from '@mui/icons-material';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { getProviders, getSession, signIn } from 'next-auth/react';
 import { GetServerSideProps } from 'next';
-import { useEffect, useState } from 'react';
 
 type FormData = {
   email: string;
@@ -129,14 +129,7 @@ const LoginPage = () => {
               </NextLink>
             </Grid> */}
             <Grid item xs={12} alignContent="center" textAlign="center">
-              <NextLink
-                href={
-                  router.query.p
-                    ? `/auth/register?p=${router.query.p}`
-                    : '/auth/register'
-                }
-                passHref
-              >
+              <NextLink href="/auth/register" passHref>
                 <Link underline="always">
                   No tienes una cuenta, crea una aquí...
                 </Link>
@@ -179,7 +172,7 @@ const LoginPage = () => {
 // - Only if you need to pre-render a page whose data must be fetched at request time
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const {req} = ctx as {req: any};
+  const { req } = ctx as { req: any };
   const session = await getSession({ req });
   // const { p } = query;
   if (session) {
@@ -190,6 +183,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
+
   return {
     props: {},
   };
