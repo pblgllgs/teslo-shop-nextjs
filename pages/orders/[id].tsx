@@ -15,74 +15,97 @@ import {
   CreditCardOffOutlined,
   CreditScoreOutlined,
 } from '@mui/icons-material';
-import { FC, useContext } from 'react';
-import { CartContext } from '../../context';
+import { GetServerSideProps, NextPage } from 'next';
+import { getSession } from 'next-auth/react';
+import { dbOrders } from '../../database';
+import { IOrder } from '../../interfaces';
 
-interface Props {}
+interface Props {
+  order: IOrder;
+}
 
-const OrderPage: FC<Props> = () => {
-  const { numberOfItems, subTotal, tax, total } = useContext(CartContext);
+const OrderPage: NextPage<Props> = ({ order }) => {
+  const { shippingAddress, numberOfItems, tax, total, subTotal } = order;
+  const { address, city, country, firstName, lastName, phone, zip, address2 } =
+    shippingAddress;
 
+  const orderSummary = {
+    numberOfItems,
+    tax,
+    total,
+    subTotal,
+  };
   return (
     <ShopLayout
-      title="Resumen de la orden 123123123"
+      title="Resumen de la orden"
       pageDescription="Resumen de la orden"
     >
       <Typography variant="h1" component="h1">
-        Orden: {'ASD123'}
+        Orden: {order._id}
       </Typography>
-      {/* <Chip
-        sx={{ my: 2 }}
-        label="Pendiente de pago"
-        variant="outlined"
-        color="error"
-        icon={<CreditCardOffOutlined />}
-      /> */}
-      <Chip
-        sx={{ my: 2 }}
-        label="Orden ya Pagada"
-        variant="outlined"
-        color="success"
-        icon={<CreditScoreOutlined />}
-      />
-      <Grid container>
+      {order.isPaid ? (
+        <Chip
+          sx={{ my: 2 }}
+          label="Orden ya Pagada"
+          variant="outlined"
+          color="success"
+          icon={<CreditScoreOutlined />}
+        />
+      ) : (
+        <Chip
+          sx={{ my: 2 }}
+          label="Pendiente de pago"
+          variant="outlined"
+          color="error"
+          icon={<CreditCardOffOutlined />}
+        />
+      )}
+      <Grid container className='fadeIn'>
         <Grid item xs={12} sm={7}>
-          <CartList />
+          <CartList products={order.orderItems} />
         </Grid>
         <Grid item xs={12} sm={5}>
           <Card className="summary-card">
             <CardContent>
-              <Typography variant="h2">Resumen: {numberOfItems}</Typography>
+              <Typography variant="h2">
+                Resumen: {order.numberOfItems}{' '}
+                {order.numberOfItems > 1 ? 'productos' : 'productos'}
+              </Typography>
               <Divider sx={{ my: 1 }} />
               <Box display="flex" justifyContent="space-between">
                 <Typography variant="subtitle1">
-                  {'Dirección de entrega'}
+                  dirección de entrega
                 </Typography>
-                <NextLink href="/checkout/address" passHref>
-                  <Link underline="always">Editar</Link>
-                </NextLink>
               </Box>
-              <Typography variant="body1">{'Juan Perez'}</Typography>
-              <Typography variant="body1">{'Av. Siempre Viva 123'}</Typography>
-              <Typography variant="body1">{'Santiago'}</Typography>
-              <Typography variant="body1">{'Chile'}</Typography>
-              <Typography variant="body1">{'+56 9 12345678'}</Typography>
+              <Typography variant="body1">
+                {firstName} {lastName}
+              </Typography>
+              <Typography variant="body1">{address}</Typography>
+              <Typography variant="body1">{city}</Typography>
+              <Typography variant="body1">{country}</Typography>
+              <Typography variant="body1">{zip}</Typography>
+              <Typography variant="body1">{phone}</Typography>
               <Divider sx={{ my: 1 }} />
-              <Box display="flex" justifyContent="end">
-                <NextLink href="/cart" passHref>
-                  <Link underline="always">Editar</Link>
-                </NextLink>
-              </Box>
-              <OrderSummary />
-              <Box sx={{ mt: 3 }}>
+              <OrderSummary order={orderSummary} />
+              <Box sx={{ mt: 3 }} display='flex' flexDirection='column'>
                 <h1>Pagar</h1>
-                <Chip
-                  sx={{ my: 2 }}
-                  label="Orden ya Pagada"
-                  variant="outlined"
-                  color="success"
-                  icon={<CreditScoreOutlined />}
-                />
+                {order.isPaid ? (
+                  <Chip
+                    sx={{ my: 2 }}
+                    label="Orden ya Pagada"
+                    variant="outlined"
+                    color="success"
+                    icon={<CreditScoreOutlined />}
+                  />
+                ) : (
+                  <Chip
+                    sx={{ my: 2 }}
+                    label="Pendiente de pago"
+                    variant="outlined"
+                    color="error"
+                    icon={<CreditCardOffOutlined />}
+                  />
+                )}
               </Box>
             </CardContent>
           </Card>
@@ -90,6 +113,45 @@ const OrderPage: FC<Props> = () => {
       </Grid>
     </ShopLayout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  query,
+}) => {
+  const { id = '' } = query as { id: string };
+  const session: any = await getSession({ req });
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false,
+      },
+    };
+  }
+  const order = await dbOrders.getOrderById(id.toString());
+  if (!order) {
+    return {
+      redirect: {
+        destination: '/orders/history',
+        permanent: false,
+      },
+    };
+  }
+  if (order.user !== session.user._id) {
+    return {
+      redirect: {
+        destination: '/orders/history',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      order,
+    },
+  };
 };
 
 export default OrderPage;

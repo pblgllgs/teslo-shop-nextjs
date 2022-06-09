@@ -1,7 +1,9 @@
+import axios, { AxiosError } from 'axios';
 import Cookies from 'js-cookie';
 import Cookie from 'js-cookie';
 import { FC, ReactNode, useEffect, useReducer } from 'react';
-import { ICartProduct } from '../../interfaces';
+import { tesloApi } from '../../api';
+import { ICartProduct, IOrder, ShippingAddress } from '../../interfaces';
 import { cartReducer, CartContext } from './';
 
 export interface CartState {
@@ -12,17 +14,6 @@ export interface CartState {
   tax: number;
   total: number;
   shippingAddress?: ShippingAddress;
-}
-
-export interface ShippingAddress {
-  firstName: string;
-  lastName: string;
-  address: string;
-  address2?: string;
-  zip: string;
-  city: string;
-  country: string;
-  phone: string;
 }
 
 const CART_INITIAL_STATE: CartState = {
@@ -37,6 +28,11 @@ const CART_INITIAL_STATE: CartState = {
 
 interface Props {
   children: ReactNode;
+}
+
+export interface PropsCreateOrder {
+  hasError: boolean;
+  message: string;
 }
 
 export const CartProvider: FC<Props> = ({ children }) => {
@@ -164,6 +160,47 @@ export const CartProvider: FC<Props> = ({ children }) => {
     dispatch({ type: '[Cart] - Remove product in cart', payload: product });
   };
 
+  const createOrder = async (): Promise<PropsCreateOrder> => {
+    if (!state.shippingAddress) {
+      throw new Error('No hay una dirección de entrega');
+    }
+
+    const body: IOrder = {
+      orderItems: state.cart.map((product) => ({
+        ...product,
+        size: product.size!,
+      })),
+      shippingAddress: state.shippingAddress,
+      numberOfItems: state.numberOfItems,
+      subTotal: state.subTotal,
+      tax: state.tax,
+      total: state.total,
+      isPaid: false,
+    };
+
+    try {
+      const { data } = await tesloApi.post<IOrder>('/orders', body);
+      console.log({ data });
+      dispatch({ type: '[Cart] - Order complete' });
+      return {
+        hasError: false,
+        message: data._id!,
+      };
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const error = err as AxiosError;
+        return {
+          hasError: true,
+          message: error.message,
+        };
+      }
+      return {
+        hasError: true,
+        message: 'Error no controlado, hable con el administrador',
+      };
+    }
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -172,6 +209,7 @@ export const CartProvider: FC<Props> = ({ children }) => {
         removeCartProduct,
         updateCartQuantity,
         updateAddress,
+        createOrder,
       }}
     >
       {children}

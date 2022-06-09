@@ -11,14 +11,15 @@ import {
 import NextLink from 'next/link';
 import { ItemCounter } from '../ui';
 import { CartContext } from '../../context';
-import { ICartProduct } from '../../interfaces';
+import { ICartProduct, IOrderItem } from '../../interfaces';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 
 interface Props {
   editable?: boolean;
+  products?: IOrderItem[];
 }
 
-export const CartList: FC<Props> = ({ editable = false }) => {
+export const CartList: FC<Props> = ({ editable = false, products }) => {
   const { cart, updateCartQuantity, removeCartProduct } =
     useContext(CartContext);
 
@@ -34,10 +35,12 @@ export const CartList: FC<Props> = ({ editable = false }) => {
     updateCartQuantity(product);
   };
 
+  const productsToShow = products ? products : cart;
+
   return (
     <>
-      {cart.length > 0 ? (
-        cart.map((product) => (
+      {productsToShow.length > 0 ? (
+        productsToShow.map((product) => (
           <Grid
             container
             key={product.slug + product.size}
@@ -66,13 +69,13 @@ export const CartList: FC<Props> = ({ editable = false }) => {
                     currentValue={product.quantity}
                     maxValue={10}
                     updateQuantity={(value) =>
-                      onNewCartQuantityValue(product, value)
+                      onNewCartQuantityValue(product as ICartProduct, value)
                     }
                   />
                 ) : (
                   <Typography variant="h5">
                     {product.quantity}
-                    {product.quantity > 0 ? ' productos' : ' producto'}
+                    {product.quantity > 1 ? ' productos' : ' producto'}
                   </Typography>
                 )}
               </Box>
@@ -89,7 +92,7 @@ export const CartList: FC<Props> = ({ editable = false }) => {
                 <Button
                   variant="text"
                   color="secondary"
-                  onClick={() => handleRemoveProduct(product)}
+                  onClick={() => handleRemoveProduct(product as ICartProduct)}
                 >
                   Remover
                 </Button>
@@ -107,7 +110,7 @@ export const CartList: FC<Props> = ({ editable = false }) => {
             flexDirection: { xs: 'column', sm: 'row' },
           }}
         >
-          <ShoppingCartOutlinedIcon fontSize='large' />
+          <ShoppingCartOutlinedIcon fontSize="large" />
 
           <Typography marginLeft={2}>
             No hay productos en el carrito...

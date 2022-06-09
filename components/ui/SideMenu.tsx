@@ -27,7 +27,7 @@ import {
 } from '@mui/icons-material';
 import { AuthContext, UiContext } from '../../context';
 import { useRouter } from 'next/router';
-import { PersonalPanel,AdminPanel } from './';
+
 
 export const SideMenu = () => {
   const { isLoggedIn, user, logout } = useContext(AuthContext);
@@ -77,7 +77,22 @@ export const SideMenu = () => {
             />
           </ListItem>
 
-          {isLoggedIn && <PersonalPanel />}
+          {isLoggedIn && (
+            <>
+              <ListItem button>
+                <ListItemIcon>
+                  <AccountCircleOutlined />
+                </ListItemIcon>
+                <ListItemText primary={'Perfil'} />
+              </ListItem>
+              <ListItem button onClick={() => navigateTo('/orders/history')}>
+                <ListItemIcon>
+                  <ConfirmationNumberOutlined />
+                </ListItemIcon>
+                <ListItemText primary={'Mis Ordenes'} />
+              </ListItem>
+            </>
+          )}
 
           <ListItem
             button
@@ -120,7 +135,12 @@ export const SideMenu = () => {
               <ListItemText primary={'Salir'} />
             </ListItem>
           ) : (
-            <ListItem button onClick={() => navigateTo(`/auth/login?destination=${router.asPath}`)}>
+            <ListItem
+              button
+              onClick={() =>
+                navigateTo(`/auth/login?destination=${router.asPath}`)
+              }
+            >
               <ListItemIcon>
                 <VpnKeyOutlined />
               </ListItemIcon>
@@ -128,7 +148,30 @@ export const SideMenu = () => {
             </ListItem>
           )}
 
-          {user?.role === 'admin' && <AdminPanel />}
+          {user?.role === 'admin' && (
+            <>
+              <Divider />
+              <ListSubheader>Admin Panel</ListSubheader>
+              <ListItem button>
+                <ListItemIcon>
+                  <CategoryOutlined />
+                </ListItemIcon>
+                <ListItemText primary={'Productos'} />
+              </ListItem>
+              <ListItem button>
+                <ListItemIcon>
+                  <ConfirmationNumberOutlined />
+                </ListItemIcon>
+                <ListItemText primary={'Ordenes'} />
+              </ListItem>
+              <ListItem button>
+                <ListItemIcon>
+                  <AdminPanelSettings />
+                </ListItemIcon>
+                <ListItemText primary={'Usuarios'} />
+              </ListItem>
+            </>
+          )}
         </List>
       </Box>
     </Drawer>

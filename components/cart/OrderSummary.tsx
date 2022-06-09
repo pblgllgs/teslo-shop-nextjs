@@ -1,10 +1,23 @@
 import { Grid, Typography } from '@mui/material';
-import { useContext } from 'react';
+import { FC, useContext } from 'react';
 import { CartContext } from '../../context';
 import { currency } from '../../utils';
 
-export const OrderSummary = () => {
+interface Props {
+  order?: {
+    numberOfItems: number,
+    subTotal: number,
+    tax : number,
+    total : number
+  };
+}
+
+export const OrderSummary:FC<Props> = ({order}) => {
+
   const { numberOfItems, subTotal, tax, total } = useContext(CartContext);
+
+  const orderValues = order ? order : {numberOfItems, subTotal, tax, total};
+
   return (
     <Grid container>
       <Grid item xs={6}>
@@ -12,15 +25,15 @@ export const OrderSummary = () => {
       </Grid>
       <Grid item xs={6} display="flex" justifyContent="end">
         <Typography>
-          {numberOfItems}
-          {numberOfItems > 1 ? ' productos' : ' producto'}
+          {orderValues.numberOfItems}
+          {orderValues.numberOfItems > 1 ? ' productos' : ' producto'}
         </Typography>
       </Grid>
       <Grid item xs={6}>
         <Typography>Sub Total</Typography>
       </Grid>
       <Grid item xs={6} display="flex" justifyContent="end">
-        <Typography>{currency.format(subTotal)}</Typography>
+        <Typography>{currency.format(orderValues.subTotal)}</Typography>
       </Grid>
       <Grid item xs={6}>
         <Typography>
@@ -28,13 +41,13 @@ export const OrderSummary = () => {
         </Typography>
       </Grid>
       <Grid item xs={6} display="flex" justifyContent="end">
-        <Typography>{currency.format(tax)}</Typography>
+        <Typography>{currency.format(orderValues.tax)}</Typography>
       </Grid>
       <Grid item xs={6}>
         <Typography variant="subtitle1">Total a pagar</Typography>
       </Grid>
       <Grid item xs={6} display="flex" justifyContent="end">
-        <Typography variant="subtitle1">{currency.format(total)}</Typography>
+        <Typography variant="subtitle1">{currency.format(orderValues.total)}</Typography>
       </Grid>
     </Grid>
   );
