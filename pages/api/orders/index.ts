@@ -37,12 +37,13 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
             return (currentPrice * current.quantity) + prev
         }, 0);
         const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE || 0);
-        const backendTotal = Math.round(subTotal * (1 + taxRate) * 10) / 10;
-        if (Math.round(total * 10) / 10 !== backendTotal) {
+        const backendTotal = subTotal * (1 + taxRate);
+        if (total  !== backendTotal) {
             throw new Error('el total no cuandra con el monto');
         }
         const userId = session.user._id;
         const newOrder = new Order({ ...req.body, isPaid: false, user: userId });
+        newOrder.total = Math.round(newOrder.total * 100) / 100;
         await newOrder.save();
         return res.status(201).json(newOrder);
 
