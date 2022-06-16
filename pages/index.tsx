@@ -8,7 +8,6 @@ import { useProducts } from '../hooks';
 const HomePage: NextPage = () => {
 
   const { products, isLoading } = useProducts('/products');
-
   return (
     <ShopLayout
       title={'Teslo-Shop'}

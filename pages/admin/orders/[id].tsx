@@ -8,38 +8,23 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
-import { CartList, OrderSummary } from '../../components/cart';
-import { ShopLayout } from '../../components/layouts';
 import {
   CreditCardOffOutlined,
   CreditScoreOutlined,
 } from '@mui/icons-material';
 import { GetServerSideProps, NextPage } from 'next';
-import { getSession } from 'next-auth/react';
-import { db, dbOrders } from '../../database';
-import { IOrder } from '../../interfaces';
-import { PayPalButtons } from '@paypal/react-paypal-js';
-import { tesloApi } from '../../api';
-import { useRouter } from 'next/router';
+import { IOrder } from '../../../interfaces';
 import { useState } from 'react';
-import { connect } from '../../database/db';
-
-export type OrderResponseBody = {
-  id: string;
-  status:
-    | 'COMPLETED'
-    | 'SAVED'
-    | 'APPROVED'
-    | 'VOIDED'
-    | 'PAYER_ACTION_REQUIRED';
-};
+import { AdminLayout } from '../../../components/layouts';
+import { CartList, OrderSummary } from '../../../components/cart';
+import { dbOrders } from '../../../database';
+import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
 
 interface Props {
   order: IOrder;
 }
 
 const OrderPage: NextPage<Props> = ({ order }) => {
-  const router = useRouter();
   const { shippingAddress, numberOfItems, tax, total, subTotal } = order;
   const { address, city, country, firstName, lastName, phone, zip, address2 } =
     shippingAddress;
@@ -52,32 +37,13 @@ const OrderPage: NextPage<Props> = ({ order }) => {
     total,
     subTotal,
   };
-  const onOrderCompleted = async (detail: OrderResponseBody) => {
-    if (detail.status !== 'COMPLETED') {
-      return alert('No hay pago en paypal');
-    }
-    setIsPaying(true);
-    try {
-      const { data } = await tesloApi.post(`/orders/pay`, {
-        transactionId: detail.id,
-        orderId: order._id,
-      });
-      router.reload();
-    } catch (error) {
-      setIsPaying(false);
-      console.log(error);
-      alert('error');
-    }
-  };
 
   return (
-    <ShopLayout
+    <AdminLayout
       title="Resumen de la orden"
-      pageDescription="Resumen de la orden"
+      subTitle={`Detalles de la orden: ${order._id}`}
+      icon={<LocalMallOutlinedIcon/>}
     >
-      <Typography variant="h1" component="h1">
-        Orden: {order._id}
-      </Typography>
       {order.isPaid ? (
         <Chip
           sx={{ my: 2 }}
@@ -144,25 +110,12 @@ const OrderPage: NextPage<Props> = ({ order }) => {
                       icon={<CreditScoreOutlined />}
                     />
                   ) : (
-                    <PayPalButtons
-                      createOrder={(data, actions) => {
-                        return actions.order.create({
-                          purchase_units: [
-                            {
-                              amount: {
-                                value: `${order.total}`,
-                              },
-                            },
-                          ],
-                        });
-                      }}
-                      onApprove={(data, actions) => {
-                        return actions.order!.capture().then((details) => {
-                          onOrderCompleted(details);
-                          // console.log({ details });
-                          // const name = details.payer.name!.given_name;
-                        });
-                      }}
+                    <Chip
+                      sx={{ my: 2 }}
+                      label="Orden no Pagada"
+                      variant="outlined"
+                      color="error"
+                      icon={<CreditCardOffOutlined />}
                     />
                   )}
                 </Box>
@@ -171,7 +124,7 @@ const OrderPage: NextPage<Props> = ({ order }) => {
           </Card>
         </Grid>
       </Grid>
-    </ShopLayout>
+    </AdminLayout>
   );
 };
 
@@ -180,28 +133,11 @@ export const getServerSideProps: GetServerSideProps = async ({
   query,
 }) => {
   const { id = '' } = query as { id: string };
-  const session: any = await getSession({ req });
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/auth/login',
-        permanent: false,
-      },
-    };
-  }
   const order = await dbOrders.getOrderById(id.toString());
   if (!order) {
     return {
       redirect: {
-        destination: '/orders/history',
-        permanent: false,
-      },
-    };
-  }
-  if (order.user !== session.user._id) {
-    return {
-      redirect: {
-        destination: '/orders/history',
+        destination: '/admin/orders',
         permanent: false,
       },
     };

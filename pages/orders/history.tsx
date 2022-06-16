@@ -118,7 +118,6 @@ const HistoryPage: NextPage<Props> = ({ orders }) => {
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const session: any = await getSession({ req });
-  console.log(session.user._id);
   if (!session) {
     return {
       redirect: {
@@ -128,7 +127,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
   const orders = await getOrdersByUSer(session.user._id);
-
   return {
     props: {
       orders,
