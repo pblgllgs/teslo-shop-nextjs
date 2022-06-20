@@ -4,7 +4,8 @@ import { IProduct } from "../interfaces";
 const productSchema = new Schema({
     description: {
         type: String,
-        required: true
+        required: true,
+        default: ''
     },
     images: [{ type: String }],
     inStock: {
@@ -33,21 +34,24 @@ const productSchema = new Schema({
     tags: [{ type: String }],
     title: {
         type: String,
-        required: true
+        required: true,
+        default: ''
     },
     type: {
         type: String,
         enum: {
             values: ['shirts', 'pants', 'hoodies', 'hats'],
             message: '{VALUE} no es un tipo válido'
-        }
+        },
+        default: 'shirts'
     },
     gender: {
         type: String,
         enum: {
             values: ['men', 'women', 'kid', 'unisex'],
             message: '{VALUE} no es un genero permitido'
-        }
+        },
+        default: 'men'
     }
 }, {
     timestamps: true

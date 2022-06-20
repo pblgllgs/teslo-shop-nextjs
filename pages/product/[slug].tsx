@@ -6,7 +6,7 @@ import { ItemCounter } from '../../components/ui';
 import { ICartProduct, IProduct, ISize } from '../../interfaces';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import {
-  getProductsBySlug,
+  getProductBySlug,
   getAllProductsSlugs,
 } from '../../database/dbProducts';
 import { CartContext } from '../../context';
@@ -144,7 +144,7 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { slug = '' } = params as { slug: string };
-  const product = await getProductsBySlug(slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     return {
@@ -168,7 +168,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 // export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 //   const { slug = '' } = params as { slug: string };
-//   const product = await getProductsBySlug(slug);
+//   const product = await getProductBySlug(slug);
 
 //   if (!product) {
 //     return {

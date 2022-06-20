@@ -44,13 +44,10 @@ const getPaypalBearerToken = async (): Promise<string | null> => {
 
 const payOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
-    //TODO: validar session del usuario
-
     const session = await getSession({ req });
     if (!session) {
         return res.status(401).json({ message: 'Unauthorized' })
     }
-    //TODO: validar mongoID
     const orderIdValid = req.body.orderId;
     const orderValid = await Order.findById(orderIdValid);
     if (!orderValid) {
