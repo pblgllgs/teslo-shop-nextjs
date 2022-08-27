@@ -1,8 +1,10 @@
+version: '3.6'
 services:
-  teslodb:
+  mongo:
     image: mongo:5.0.0
-    container_name: teslo-database
     ports:
       - "27017:27017"
     volumes:
-      - ./mongo:/data/db
+      - db_data_mongo:/data/db
+volumes:
+  db_data_mongo:
